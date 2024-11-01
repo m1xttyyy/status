@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% if login_required %}
+            <form method="POST" class="login-form">
+                <input type="text" name="username" placeholder="Логин" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit" class="btn">Войти</button>
+            </form>
+        {% else %}
+            <h1>Админ панель</h1>
+            <form method="POST" action="/update_status">
+                <select name="status" class="form-control" id="status-select">
+                    {% for option in status_options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div id="activity-section" style="display: none;">
+                    <select name="activity" class="form-control">
+                        <option value="">Выберите занятие</option>
+                        {% for activity in activities %}
+                            <option value="{{ activity }}">{{ activity }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <input type="text" name="time_range" class="form-control" placeholder="Время (с 12:00 до 13:30)">
+                </div>
+                <div id="sleep-section" style="display: none;">
+                    <input type="text" name="sleep_until" class="form-control" placeholder="Спать до (12:00)">
+                </div>
+                <input type="text" name="custom_text" class="form-control" placeholder="Произвольный текст">
+                <br>
+                <button type="submit" class="btn">Обновить статус</button>
+            </form>
+            <a href="/logout" class="btn">Выйти</a>
+        {% endif %}
+    </div>
+
+    <script>
+        document.getElementById('status-select').addEventListener('change', function() {
+            var activitySection = document.getElementById('activity-section');
+            var sleepSection = document.getElementById('sleep-section');
+            var selectedStatus = this.value;
+
+            if (selectedStatus === "Занят") {
+                activitySection.style.display = 'block';
+                sleepSection.style.display = 'none';
+            } else if (selectedStatus === "Я сплю") {
+                activitySection.style.display = 'none';
+                sleepSection.style.display = 'block';
+            } else {
+                activitySection.style.display = 'none';
+                sleepSection.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

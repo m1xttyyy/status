@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Статус: <span id="status-text">{{ status|safe }}</span></h1>
+    </div>
+
+    <script>
+        function updateStatus() {
+            fetch('/get_status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status-text').innerHTML = data.status;
+                });
+        }
+
+        setInterval(updateStatus, 5000);
+        updateStatus(); // Обновляем статус сразу при загрузке страницы
+    </script>
+</body>
+</html>
